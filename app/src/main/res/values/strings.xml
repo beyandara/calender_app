@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">Calender App</string>
+    <string name="month_1">January</string>
+    <string name="month_2">February</string>
+    <string name="month_3">March</string>
+    <string name="month_4">April</string>
+    <string name="month_5">May</string>
+    <string name="month_6">June</string>
+    <string name="month_7">July</string>
+    <string name="month_8">August</string>
+    <string name="month_9">September</string>
+    <string name="month_10">October</string>
+    <string name="month_11">November</string>
+    <string name="month_12">December</string>
+    <string name="monday_letter">M</string>
+    <string name="tues_thursday_letter">T</string>
+    <string name="wednesday_letter">W</string>
+    <string name="friday_letter">F</string>
+    <string name="sat_sunday_letter">S</string>
+    <string name="workday_text">Number of workdays this month: </string>
+    <string name="bottom_click_text">Click on a date to see number of days since
+        January 1st</string>
 </resources>
