@@ -1,25 +1,23 @@
 package com.example.calenderapp
 
-import android.media.Image
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Card
@@ -30,9 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -67,6 +63,7 @@ fun CalendarLayout(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .height(40.dp)
         )
+        // month display
         Row (
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -79,14 +76,18 @@ fun CalendarLayout(modifier: Modifier = Modifier) {
         }
         Box(
             modifier = Modifier
-        ) {
+        ) {//background for calender
             Image(
-                painter = painterResource(R.drawable.ic_launcher_background),
+                painter = painterResource(R.drawable.calender_background),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(400.dp)
+                    .size(600.dp)
+                    .padding(bottom = 200.dp)
+
 
             )
+
+
             LazyVerticalGrid(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -101,14 +102,19 @@ fun CalendarLayout(modifier: Modifier = Modifier) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(height = 46.dp)
-                            .border(width = 2.dp, color = Color.Blue),
+                            .border(width = 2.dp, color = Color.Blue)
+                            .clickable {  },
                         colors = CardDefaults.cardColors(
                             containerColor = Color.Transparent
                         )
-                    ) {}
+                    ){Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clickable { testClickable(index) })}
                 }
             }
         }
+
         Row (
             modifier = Modifier
                 .border(BorderStroke(2.dp, Color.Black))
@@ -120,6 +126,10 @@ fun CalendarLayout(modifier: Modifier = Modifier) {
     }
 }
 
+fun testClickable(index: Int) {
+    // tester om clickable fungerer
+    println("clicked: $index")
+}
 @Composable
 fun showMonth(monthNumber: Int): String {
     val numberToMonthName = when (monthNumber) {
