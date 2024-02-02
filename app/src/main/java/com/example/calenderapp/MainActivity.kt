@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun CalendarLayout(modifier: Modifier = Modifier) {
+fun CalendarLayout() {
     Column (
         modifier = Modifier
             .fillMaxSize()
