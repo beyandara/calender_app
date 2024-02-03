@@ -110,7 +110,6 @@ fun CalenderInformation(monthNumber: Int = 1) {
 }
 
 
-
 @Composable
 fun CalendarLayout(onCardClick: () -> Unit) {
 //    var clicked by remember { mutableStateOf(false) }
@@ -231,6 +230,47 @@ fun showMonth(monthNumber: Int): String {
         else -> stringResource(R.string.month_12)
     }
     return numberToMonthName
+}
+
+//Funksjoner som bruker Zellers Algoritme til å finne første dag i mnd og år.
+//firstDayOfMonth tar inn år som streng, mnd som int, returnerer navn på dag som String
+fun monthIfJanOrFeb(month: Int, year: Int): Pair<Int, Int> {
+    var updatedMonth = month
+    var updatedYear = year
+
+    when (month) {
+        1, 2 -> {
+            updatedMonth += 12
+            updatedYear -= 1
+        }
+    }
+    return Pair(updatedMonth, updatedYear)
+}
+fun doubleToInt(doubleNumber: Double): Int {
+    return doubleNumber.toInt()
+}
+fun firstDayOfMonth(year: String, month: Int): String {
+    val yearAsInt = year.toInt()
+    val monthUpdatet = monthIfJanOrFeb(month, yearAsInt).first
+    val yearUpdated = monthIfJanOrFeb(month, yearAsInt).second
+    val yearAsString = yearUpdated.toString()
+    val firstPartOfYear = yearAsString.substring(0,2).toInt()
+    val lastPartOfYear = yearAsString.substring(2,4).toInt()
+    val firstOfMonth = 1
+    val addIntegerParts =
+        doubleToInt(2.6*monthUpdatet-5.39) + (lastPartOfYear/4) + (firstPartOfYear/4) +
+                firstOfMonth + lastPartOfYear - (2*firstPartOfYear)
+    val remainder = (addIntegerParts % 7 + 7) % 7
+    val nameOfFirstDay = when (remainder) {
+        0 -> "Sunday"
+        1 -> "Monday"
+        2 -> "Tuesday"
+        3 -> "Wednesday"
+        4 -> "Thursday"
+        5 -> "Friday"
+        else -> "Saturday"
+    }
+    return nameOfFirstDay
 }
 
 @Preview(showBackground = true)
