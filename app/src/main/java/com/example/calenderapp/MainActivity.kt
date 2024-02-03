@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -46,7 +48,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    CalendarLayout()
+                    CalenderInformation()
                 }
             }
         }
@@ -54,7 +56,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun CalendarLayout() {
+fun CalenderInformation(monthNumber: Int = 1) {
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -69,53 +71,15 @@ fun CalendarLayout() {
                 .align(Alignment.CenterHorizontally)
         ){
             Text(
-                text = showMonth(monthNumber = 2),
+                text = showMonth(monthNumber = monthNumber),
                 fontWeight = FontWeight.Bold,
                 color = Color.Green,
             )
         }
-        Box(
-            modifier = Modifier
-        ) {//background for calender
-            Image(
-                painter = painterResource(R.drawable.calender_background),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(600.dp)
-                    .padding(bottom = 200.dp)
+        // function to initialize calender
+        CalendarLayout()
 
-
-            )
-
-
-            LazyVerticalGrid(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(width = 4.dp, color = Color.Blue),
-                columns = GridCells.Fixed(count = 6),
-                verticalArrangement = Arrangement.spacedBy(space = 2.dp),
-                horizontalArrangement = Arrangement.spacedBy(space = 2.dp),
-                contentPadding = PaddingValues(all = 8.dp)
-            ) {
-                items(count = 48) { index ->
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(height = 46.dp)
-                            .border(width = 2.dp, color = Color.Blue)
-                            .clickable {  },
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.Transparent
-                        )
-                    ){Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clickable { testClickable(index) })}
-                }
-            }
-        }
-
-        Row (
+        Row (verticalAlignment = Alignment.Top,
             modifier = Modifier
                 .border(BorderStroke(2.dp, Color.Black))
         ){
@@ -126,9 +90,62 @@ fun CalendarLayout() {
     }
 }
 
-fun testClickable(index: Int) {
+@Composable
+fun CalendarLayout() {Box(
+    modifier = Modifier
+) {//background for calender
+//    Image(
+//        painter = painterResource(R.drawable.calender_background),
+//        contentDescription = null,
+//        modifier = Modifier
+//            .size(600.dp)
+//            .padding(bottom = 200.dp)
+//
+//
+//    )
+
+
+    LazyVerticalGrid(
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(width = 4.dp, color = Color.Blue),
+        columns = GridCells.Fixed(count = 6),
+        verticalArrangement = Arrangement.spacedBy(space = 2.dp),
+        horizontalArrangement = Arrangement.spacedBy(space = 2.dp),
+        contentPadding = PaddingValues(all = 8.dp)
+    ) {
+        itemsIndexed(items = listOf(13, 63, 22, 23, 66, 74)) { index, item ->
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(height = 46.dp)
+                    .border(width = 2.dp, color = Color.Blue),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.Transparent
+                )
+            ){
+                Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable { testClickable(index, item.toString()) }
+            ){
+                Text(
+                    text = item.toString(), // Viser tallene i lista øverst
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(4.dp),
+                    color = Color.Black)
+                }
+            }
+        }
+    }
+}}
+
+fun testClickable(index: Int, content: String) {
     // tester om clickable fungerer
     println("clicked: $index")
+    println(content)
+
 }
 @Composable
 fun showMonth(monthNumber: Int): String {
@@ -153,6 +170,6 @@ fun showMonth(monthNumber: Int): String {
 @Composable
 fun GreetingPreview() {
     CalenderAppTheme {
-        CalendarLayout()
+        CalenderInformation()
     }
 }
