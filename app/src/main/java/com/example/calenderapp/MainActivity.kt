@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,26 +16,36 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.VerticalAlignmentLine
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.Popup
 import com.example.calenderapp.ui.theme.CalenderAppTheme
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +66,9 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun CalenderInformation(monthNumber: Int = 1) {
+    var clicked by remember { mutableStateOf(false) } // Flyttet clicked hit
+
+
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -77,7 +89,14 @@ fun CalenderInformation(monthNumber: Int = 1) {
             )
         }
         // function to initialize calender
-        CalendarLayout()
+        CalendarLayout(onCardClick = { clicked = true })
+        if (clicked) {
+            MinimalDialog(onDismissRequest = { clicked = false})
+        }
+
+//        CalendarLayout(onCardClick = { clicked = true }) // Lagt til ny parameter
+//        if (clicked) {
+//            MinimalDialog(onDismissRequest = { clicked = false })
 
         Row (verticalAlignment = Alignment.Top,
             modifier = Modifier
@@ -90,8 +109,12 @@ fun CalenderInformation(monthNumber: Int = 1) {
     }
 }
 
+
+
 @Composable
-fun CalendarLayout() {Box(
+fun CalendarLayout(onCardClick: () -> Unit) {
+//    var clicked by remember { mutableStateOf(false) }
+    Box(
     modifier = Modifier
 ) {//background for calender
 //    Image(
@@ -114,6 +137,7 @@ fun CalendarLayout() {Box(
         horizontalArrangement = Arrangement.spacedBy(space = 2.dp),
         contentPadding = PaddingValues(all = 8.dp)
     ) {
+
         itemsIndexed(items = listOf(13, 63, 22, 23, 66, 74)) { index, item ->
             Card(
                 modifier = Modifier
@@ -127,8 +151,9 @@ fun CalendarLayout() {Box(
                 Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clickable { testClickable(index, item.toString()) }
+                    .clickable { onCardClick() }
             ){
+
                 Text(
                     text = item.toString(), // Viser tallene i lista øverst
                     modifier = Modifier
@@ -137,9 +162,51 @@ fun CalendarLayout() {Box(
                     color = Color.Black)
                 }
             }
+//            if (clicked) {
+//                MinimalDialog {
+//                    testClickable(1, "wow")
+//                }
+//            }
         }
     }
+
 }}
+
+@Composable
+fun MinimalDialog(
+    onDismissRequest: () -> Unit,
+) {
+    Dialog(onDismissRequest = { onDismissRequest() }) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+                .padding(16.dp),
+            shape = RoundedCornerShape(16.dp),
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "This is a dialog with buttons and an image.",
+                    modifier = Modifier.padding(16.dp),
+                )
+
+                TextButton(
+                    onClick = { onDismissRequest() },
+                    modifier = Modifier.padding(8.dp),
+                ) {
+                    Text("Dismiss")
+                }
+        }
+        }
+    }
+}
+
+
 
 fun testClickable(index: Int, content: String) {
     // tester om clickable fungerer
