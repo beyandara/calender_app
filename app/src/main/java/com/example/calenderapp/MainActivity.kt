@@ -127,6 +127,20 @@ fun CalenderInformation(monthNumber: Int = 2, year: Int = 2023) {
         }
     }
 }
+
+@Composable
+fun calculateWeeks(year: Int = 2024, month: Int = 9): Int {
+    val startingDay = firstDayOfMonth(year, month)
+    val numOfDays = numberOfDays(year, month)
+    val remainderWeeks = (numOfDays % 7)
+
+    return if (startingDay == "Sunday" || startingDay == "Saturday" && remainderWeeks > 1) {
+        6
+    } else if (startingDay == "Monday" && remainderWeeks == 0) {
+        4
+    } else 5
+}
+
 @Composable
 fun WeekDays() {
     val listOfDays = listOf("", "mon", "tue", "wed", "thu", "fri", "sat", "sun")
@@ -157,12 +171,12 @@ fun WeekDays() {
 }
 
 @Composable
-fun WeekNumbers() {
-    val listOfWeeks = listOf("1", "2", "3", "4", "5") // Dette skal bli parameterisert
+fun WeekNumbers(numOfWeeks: Int = 5) {
+//    val listOfWeeks = listOf("1", "2", "3", "4", "5") // Dette skal bli parameterisert
     LazyColumn(
         contentPadding = PaddingValues(start = 5.dp),
     ) {
-        items(count = listOfWeeks.size) { index ->
+        items(count = numOfWeeks) { index ->
             Box(
                 modifier = Modifier
                     .border(0.dp, Color.Black)
@@ -170,7 +184,7 @@ fun WeekNumbers() {
                     .width(48.dp)
             ) {
                 Text(
-                    text = listOfWeeks[index],
+                    text = (index + 1).toString(),
                     modifier = Modifier
                         .align(Alignment.Center)
                 )
@@ -179,6 +193,7 @@ fun WeekNumbers() {
     }
 }
 
+
 @Composable
 fun CalendarLayout(year: Int, month: Int, onCardClick: () -> Unit) {
 //    var clicked by remember { mutableStateOf(false) }
@@ -186,7 +201,7 @@ fun CalendarLayout(year: Int, month: Int, onCardClick: () -> Unit) {
         Column {
             WeekDays()
             Row {
-                WeekNumbers()
+                WeekNumbers(calculateWeeks(year, month))
                 LazyVerticalGrid(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -217,7 +232,7 @@ fun CalendarLayout(year: Int, month: Int, onCardClick: () -> Unit) {
                                     text = item.toString(), // Viser tallene i lista øverst
                                     modifier = Modifier
                                         .align(Alignment.Center),
-    //                        .padding(4.dp),
+                                    //                        .padding(4.dp),
                                     color = Color.Black
                                 )
                             }
@@ -386,6 +401,6 @@ fun BackGround() {
 @Composable
 fun GreetingPreview() {
     CalenderAppTheme {
-        CalenderInformation(monthNumber = 1, year = 2024)
+        CalenderInformation(monthNumber = 9, year = 2024)
     }
 }
