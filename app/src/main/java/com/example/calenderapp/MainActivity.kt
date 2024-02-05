@@ -5,21 +5,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -39,9 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -49,7 +43,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.core.graphics.toColorInt
 import com.example.calenderapp.ui.theme.CalenderAppTheme
 
 
@@ -73,43 +69,56 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun CalenderInformation(monthNumber: Int = 2, year: Int = 2023) {
     var clicked by remember { mutableStateOf(false) } // Flyttet clicked hit
+    val painter = painterResource(R.drawable.background)
+    Box(
+        modifier = Modifier
+            .padding(start = 5.dp, end = 5.dp, top = 50.dp, bottom = 265.dp)
+
+    ) {
+        Image(
+            modifier =Modifier.fillMaxSize(),
+            painter = painter,
+            contentDescription = "Background image",
+            contentScale = ContentScale.Crop
+        )
 
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            Spacer(
-                modifier = Modifier
-                    .height(40.dp)
-            )
+        Column {
+//            Spacer(
+//                modifier = Modifier
+//                    .height(40.dp)
+//            )
             // month display
             Row(
                 modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
+//                    .align(Alignment.CenterHorizontally)
                     .fillMaxWidth()
-                    .border(BorderStroke(0.dp, Color.Black))
-                    .height(46.dp)
+                    .border(BorderStroke(1.dp, color = Color("#9F2B68".toColorInt())))
+                    .height(60.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
                 Text(
                     text = showMonth(monthNumber = monthNumber),
                     fontWeight = FontWeight.Bold,
-                    color = Color.Green,
+                    color = Color.DarkGray,
+                    textAlign = TextAlign.Center,
+                    fontSize = 22.sp
                 )
                 Text(
                     text = year.toString(),
                     fontWeight = FontWeight.Bold,
-                    color = Color.Green,
-                    modifier = Modifier.padding(start = 5.dp, end = 5.dp)
-                    // TODO() sentrer teksten til midten!!
+                    color = Color.DarkGray,
+                    modifier = Modifier.padding(start = 5.dp),
+                    fontSize = 22.sp
                 )
             }
 
-        // function to initialize calender - fra chatgpt
-        CalendarLayout(year, monthNumber, onCardClick = { clicked = true })
-        if (clicked) {
-            MinimalDialog(onDismissRequest = { clicked = false})
-        }
+            // function to initialize calender - fra chatgpt
+            CalendarLayout(year, monthNumber, onCardClick = { clicked = true })
+            if (clicked) {
+                MinimalDialog(onDismissRequest = { clicked = false })
+            }
 
 
             Row(
@@ -117,13 +126,18 @@ fun CalenderInformation(monthNumber: Int = 2, year: Int = 2023) {
                 modifier = Modifier
 //                    .padding(start = 5.dp, end = 5.dp)
                     .fillMaxWidth()
-                    .border(BorderStroke(1.dp, Color.Black))
-                    .height(46.dp)
+                    .border(BorderStroke(1.dp, color = Color("#9F2B68".toColorInt())))
+                    .height(60.dp)
+                    .padding(top = 2.dp)
             ) {
                 Text(
                     text = stringResource(R.string.bottom_click_text),
+                    textAlign = TextAlign.Center,
+                    fontSize = 18.sp
 
-            )
+
+                    )
+            }
         }
     }
 }
@@ -146,9 +160,9 @@ fun WeekDays() {
     val listOfDays = listOf("", "mon", "tue", "wed", "thu", "fri", "sat", "sun")
     LazyRow(
         modifier = Modifier
-            .padding(start = 5.dp, end = 5.dp)
+//            .padding(start = 5.dp, end = 5.dp)
             .fillMaxWidth()
-            .border(BorderStroke(0.dp, Color.Black))
+            .border(BorderStroke(1.dp, color = Color("#9F2B68".toColorInt())))
             .height(46.dp)
             .width(46.dp)
 
@@ -174,12 +188,12 @@ fun WeekDays() {
 fun WeekNumbers(numOfWeeks: Int = 5) {
 //    val listOfWeeks = listOf("1", "2", "3", "4", "5") // Dette skal bli parameterisert
     LazyColumn(
-        contentPadding = PaddingValues(start = 5.dp),
+//        contentPadding = PaddingValues(start = 5.dp),
     ) {
         items(count = numOfWeeks) { index ->
             Box(
                 modifier = Modifier
-                    .border(0.dp, Color.Black)
+                    .border(1.dp, color = Color("#9F2B68".toColorInt()))
                     .height(46.dp)
                     .width(48.dp)
             ) {
@@ -200,13 +214,14 @@ fun CalendarLayout(year: Int, month: Int, onCardClick: () -> Unit) {
     Box {
         Column {
             WeekDays()
+
             Row {
                 WeekNumbers(calculateWeeks(year, month))
                 LazyVerticalGrid(
                     modifier = Modifier
                         .fillMaxWidth(),
                     columns = GridCells.Fixed(count = 7),
-                    contentPadding = PaddingValues(end = 5.dp)
+//                    contentPadding = PaddingValues(end = 5.dp)
                 ) {
 
                     itemsIndexed(
@@ -215,7 +230,7 @@ fun CalendarLayout(year: Int, month: Int, onCardClick: () -> Unit) {
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .border(width = 0.dp, color = Color.Blue)
+                                .border(width = 0.dp, color = Color("#9F2B68".toColorInt()))
                                 .height(height = 46.dp),
 
                             colors = CardDefaults.cardColors(
@@ -390,7 +405,7 @@ fun daysSinceJanuaryFirst(date: Int, month: Int, year: Int): String {
 fun BackGround() {
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
-            painter = painterResource(R.drawable.calender_background),
+            painter = painterResource(R.drawable.background),
             contentDescription = "Background",
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.matchParentSize())
