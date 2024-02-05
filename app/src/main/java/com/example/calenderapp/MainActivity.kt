@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    CalenderInformation()
+                    CalenderInformation(monthNumber = 1, year = 2024)
                 }
             }
         }
@@ -71,12 +71,9 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun CalenderInformation(monthNumber: Int = 3, year: Int = 2023) {
+fun CalenderInformation(monthNumber: Int = 2, year: Int = 2023) {
     var clicked by remember { mutableStateOf(false) } // Flyttet clicked hit
-    val backgroundImage = painterResource(R.drawable.calender_background)
-    Box(modifier = Modifier.padding(start = 5.dp, end = 5.dp)
 
-    ) {
 
         Column(
             modifier = Modifier
@@ -95,7 +92,6 @@ fun CalenderInformation(monthNumber: Int = 3, year: Int = 2023) {
                     .height(46.dp)
             ) {
                 Text(
-                    modifier = Modifier,
                     text = showMonth(monthNumber = monthNumber),
                     fontWeight = FontWeight.Bold,
                     color = Color.Green,
@@ -109,11 +105,11 @@ fun CalenderInformation(monthNumber: Int = 3, year: Int = 2023) {
                 )
             }
 
-            // function to initialize calender - fra chatgpt
-            CalendarLayout(year, monthNumber, onCardClick = { clicked = true })
-            if (clicked) {
-                MinimalDialog(onDismissRequest = { clicked = false })
-            }
+        // function to initialize calender - fra chatgpt
+        CalendarLayout(year, monthNumber, onCardClick = { clicked = true })
+        if (clicked) {
+            MinimalDialog(onDismissRequest = { clicked = false})
+        }
 
 
             Row(
@@ -127,8 +123,7 @@ fun CalenderInformation(monthNumber: Int = 3, year: Int = 2023) {
                 Text(
                     text = stringResource(R.string.bottom_click_text),
 
-                    )
-            }
+            )
         }
     }
 }
@@ -162,12 +157,12 @@ fun WeekDays() {
 }
 
 @Composable
-fun WeekNumbers(numOfWeeks: Int = 5) {
-//    val listOfWeeks = listOf("1", "2", "3", "4", "5") // Dette skal bli parameterisert
+fun WeekNumbers() {
+    val listOfWeeks = listOf("1", "2", "3", "4", "5") // Dette skal bli parameterisert
     LazyColumn(
         contentPadding = PaddingValues(start = 5.dp),
     ) {
-        items(count = numOfWeeks) { index ->
+        items(count = listOfWeeks.size) { index ->
             Box(
                 modifier = Modifier
                     .border(0.dp, Color.Black)
@@ -175,7 +170,7 @@ fun WeekNumbers(numOfWeeks: Int = 5) {
                     .width(48.dp)
             ) {
                 Text(
-                    text = (index + 1).toString(),
+                    text = listOfWeeks[index],
                     modifier = Modifier
                         .align(Alignment.Center)
                 )
@@ -187,23 +182,16 @@ fun WeekNumbers(numOfWeeks: Int = 5) {
 @Composable
 fun CalendarLayout(year: Int, month: Int, onCardClick: () -> Unit) {
 //    var clicked by remember { mutableStateOf(false) }
-    Box(
-        modifier = Modifier
-            .clip(RectangleShape)
-            .padding(start = 5.dp, end = 5.dp)
-
-            .background(Color.DarkGray)
-            .wrapContentWidth(Alignment.CenterHorizontally),
-        contentAlignment = Alignment.Center
-    ) {
+    Box {
         Column {
             WeekDays()
             Row {
-                WeekNumbers(calculateWeeks(year, month))
+                WeekNumbers()
                 LazyVerticalGrid(
                     modifier = Modifier
                         .fillMaxWidth(),
                     columns = GridCells.Fixed(count = 7),
+                    contentPadding = PaddingValues(end = 5.dp)
                 ) {
 
                     itemsIndexed(
@@ -211,7 +199,7 @@ fun CalendarLayout(year: Int, month: Int, onCardClick: () -> Unit) {
                     ) { _, item ->
                         Card(
                             modifier = Modifier
-//                                .fillMaxWidth()
+                                .fillMaxWidth()
                                 .border(width = 0.dp, color = Color.Blue)
                                 .height(height = 46.dp),
 
@@ -273,42 +261,6 @@ fun MinimalDialog(
         }
         }
     }
-}
-
-@Composable
-fun calculateWeeks(year: Int = 2024, month: Int = 9): Int {
-    val startingDay = firstDayOfMonth(year, month)
-    val numOfDays = numberOfDays(year, month)
-    val remainderWeeks = (numOfDays % 7)
-
-    return if (startingDay == "Sunday" || startingDay == "Saturday" && remainderWeeks > 1 ) {
-        6
-    }
-    else if (startingDay == "Monday" && remainderWeeks == 0) {
-        4
-    }
-    else 5
-
-
-//    if (startingDay == "Sunday") {
-//        if (remainderWeeks == 1) {
-//            println("num of weeks is 5")}
-//        else if (remainderWeeks > 1) {
-//            println("num of weeks is 6")}
-//    }
-//    else if (startingDay == "Saturday") {
-//        if (remainderWeeks == 1) {
-//            println("num of weeks is 5")}
-//        else if (remainderWeeks > 1) {
-//            println("num of weeks is 6")}}
-//    else if (remainderWeeks == 0) {
-//        println("num of weeks is 4")
-//    }
-//    else {println("num of weeks is 5")}
-
-
-
-
 }
 
 @Composable
@@ -403,6 +355,22 @@ fun listOfDaysInMonth(year: Int, month: Int): List<String> {
     return listOfDaysInChosenMonth
 }
 
+//Calculate number of days since January 1st.
+fun daysSinceJanuaryFirst(date: Int, month: Int, year: Int): String {
+    //list with number of days in each month
+    val daysInMonth = listOf(31, if (isLeapYear(year)) 29 else 28, 31, 30, 31, 30, 31,
+        31, 30, 31, 30, 31)
+
+    var daycount = 0
+
+    for (m in 1 until month) {   //iterate in range m to current month
+        daycount += daysInMonth[m - 1]     //add value from daysInMonth for previous months
+    }
+    daycount += date                       //add number of days in current month to days
+
+    return daycount.toString()
+}
+
 @Composable
 fun BackGround() {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -418,7 +386,6 @@ fun BackGround() {
 @Composable
 fun GreetingPreview() {
     CalenderAppTheme {
-        CalenderInformation(1, 2023)
-//        calculateWeeks()
+        CalenderInformation(monthNumber = 1, year = 2024)
     }
 }
