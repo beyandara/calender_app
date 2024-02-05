@@ -381,7 +381,7 @@ fun daysSinceJanuaryFirst(date: Int, month: Int, year: Int): String {
     for (m in 1 until month) {   //iterate in range m to current month
         daycount += daysInMonth[m - 1]     //add value from daysInMonth for previous months
     }
-    daycount += date                       //add number of days in current month to days
+    daycount += date                       //add number  of days in current month to days
 
     return daycount.toString()
 }
