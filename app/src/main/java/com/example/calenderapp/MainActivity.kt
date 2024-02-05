@@ -184,13 +184,7 @@ fun CalendarLayout(onCardClick: () -> Unit) {
                 ) {
 
                     itemsIndexed(
-                        items =  listOf(
-                            "", " ", "22", "23", "66", "74", "10",
-                            "13", "63", "22", "23", "66", "74", "10",
-                            "13", "63", "22", "23", "66", "74", "10",
-                            "13", "63", "22", "23", "66", "74", "10",
-                            "13", "63", "2", "23", "66", "74", ""
-                    )
+                        items =  listOfDaysInMonth("2023", 1)
                     ) { _, item ->
                         Card(
                             modifier = Modifier
@@ -316,6 +310,39 @@ fun firstDayOfMonth(year: String, month: Int): String {
         else -> "Saturday"
     }
     return nameOfFirstDay
+}
+
+//Return True if year is divisible by 4 and reminder not zero when divided by 100, or if
+// reminder of year divided by 400 = 0
+fun isLeapYear(year: Int): Boolean {
+    return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)
+}
+fun numberOfDays(year: Int, month: Int):Int {
+    return when (month) {
+        1, 3, 5, 7, 8, 10, 12 -> 31
+        2 -> if (isLeapYear(year)) 29 else 28
+        4, 6, 9, 11 -> 30
+        else -> throw IllegalArgumentException("Invalid month")
+    }
+}
+fun listOfDaysInMonth(year: String, month: Int): List<String> {
+    val possibleDaysInMonth = listOf(" ", " ", " ", " ", " ", " ", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+        "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27",
+        "28", "29", "30", "31")
+    val nameOfFirstDay = firstDayOfMonth(year, month)
+    val firstDayIndex: Int = when(nameOfFirstDay) {
+        "Monday" -> 6
+        "Tuesday" -> 5
+        "Wednesday" -> 4
+        "Thursday" -> 3
+        "Friday" -> 2
+        "Saturday" -> 1
+        else -> 0
+    }
+    val daysInChosenMonth = numberOfDays(year.toInt(), month)
+    val lastDayIndex = possibleDaysInMonth.indexOf(daysInChosenMonth.toString())
+    val listOfDaysInChosenMonth = possibleDaysInMonth.subList(firstDayIndex, lastDayIndex+1)
+    return listOfDaysInChosenMonth
 }
 
 @Composable
