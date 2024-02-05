@@ -66,7 +66,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun CalenderInformation(monthNumber: Int = 2, year: Int = 2023) {
+fun CalenderInformation(monthNumber: Int = 3, year: Int = 2023) {
     var clicked by remember { mutableStateOf(false) } // Flyttet clicked hit
 
 
@@ -152,12 +152,12 @@ fun WeekDays() {
 }
 
 @Composable
-fun WeekNumbers() {
-    val listOfWeeks = listOf("1", "2", "3", "4", "5") // Dette skal bli parameterisert
+fun WeekNumbers(numOfWeeks: Int = 5) {
+//    val listOfWeeks = listOf("1", "2", "3", "4", "5") // Dette skal bli parameterisert
     LazyColumn(
         contentPadding = PaddingValues(start = 5.dp),
     ) {
-        items(count = listOfWeeks.size) { index ->
+        items(count = numOfWeeks) { index ->
             Box(
                 modifier = Modifier
                     .border(0.dp, Color.Black)
@@ -165,7 +165,7 @@ fun WeekNumbers() {
                     .width(48.dp)
             ) {
                 Text(
-                    text = listOfWeeks[index],
+                    text = (index + 1).toString(),
                     modifier = Modifier
                         .align(Alignment.Center)
                 )
@@ -181,7 +181,7 @@ fun CalendarLayout(year: Int, month: Int, onCardClick: () -> Unit) {
         Column {
             WeekDays()
             Row {
-                WeekNumbers()
+                WeekNumbers(calculateWeeks(year, month))
                 LazyVerticalGrid(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -256,6 +256,42 @@ fun MinimalDialog(
         }
         }
     }
+}
+
+@Composable
+fun calculateWeeks(year: Int = 2024, month: Int = 9): Int {
+    val startingDay = firstDayOfMonth(year, month)
+    val numOfDays = numberOfDays(year, month)
+    val remainderWeeks = (numOfDays % 7)
+
+    return if (startingDay == "Sunday" || startingDay == "Saturday" && remainderWeeks > 1 ) {
+        6
+    }
+    else if (startingDay == "Monday" && remainderWeeks == 0) {
+        4
+    }
+    else 5
+
+
+//    if (startingDay == "Sunday") {
+//        if (remainderWeeks == 1) {
+//            println("num of weeks is 5")}
+//        else if (remainderWeeks > 1) {
+//            println("num of weeks is 6")}
+//    }
+//    else if (startingDay == "Saturday") {
+//        if (remainderWeeks == 1) {
+//            println("num of weeks is 5")}
+//        else if (remainderWeeks > 1) {
+//            println("num of weeks is 6")}}
+//    else if (remainderWeeks == 0) {
+//        println("num of weeks is 4")
+//    }
+//    else {println("num of weeks is 5")}
+
+
+
+
 }
 
 @Composable
@@ -365,6 +401,7 @@ fun BackGround() {
 @Composable
 fun GreetingPreview() {
     CalenderAppTheme {
-        CalenderInformation()
+        CalenderInformation(1, 2023)
+//        calculateWeeks()
     }
 }
