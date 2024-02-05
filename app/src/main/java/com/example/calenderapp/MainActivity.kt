@@ -66,7 +66,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun CalenderInformation(monthNumber: Int = 1) {
+fun CalenderInformation(monthNumber: Int = 2, year: Int = 2023) {
     var clicked by remember { mutableStateOf(false) } // Flyttet clicked hit
 
 
@@ -92,10 +92,16 @@ fun CalenderInformation(monthNumber: Int = 1) {
                 fontWeight = FontWeight.Bold,
                 color = Color.Green,
             )
+            Text (
+                text = year.toString(),
+                fontWeight = FontWeight.Bold,
+                color = Color.Green,
+                modifier = Modifier.padding(start = 5.dp, end = 5.dp)
+            )
         }
 
         // function to initialize calender - fra chatgpt
-        CalendarLayout(onCardClick = { clicked = true })
+        CalendarLayout(year, monthNumber, onCardClick = { clicked = true })
         if (clicked) {
             MinimalDialog(onDismissRequest = { clicked = false})
         }
@@ -169,7 +175,7 @@ fun WeekNumbers() {
 }
 
 @Composable
-fun CalendarLayout(onCardClick: () -> Unit) {
+fun CalendarLayout(year: Int, month: Int, onCardClick: () -> Unit) {
 //    var clicked by remember { mutableStateOf(false) }
     Box {
         Column {
@@ -184,7 +190,7 @@ fun CalendarLayout(onCardClick: () -> Unit) {
                 ) {
 
                     itemsIndexed(
-                        items =  listOfDaysInMonth(2024, 2)
+                        items =  listOfDaysInMonth(year, month)
                     ) { _, item ->
                         Card(
                             modifier = Modifier
