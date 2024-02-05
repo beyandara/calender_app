@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    CalenderInformation()
+                    CalenderInformation(monthNumber = 1, year = 2024)
                 }
             }
         }
@@ -66,7 +66,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun CalenderInformation(monthNumber: Int = 2, year: Int = 2023) {
+fun CalenderInformation(monthNumber: Int, year: Int) {
     var clicked by remember { mutableStateOf(false) } // Flyttet clicked hit
 
 
@@ -381,6 +381,6 @@ fun BackGround() {
 @Composable
 fun GreetingPreview() {
     CalenderAppTheme {
-        CalenderInformation()
+        CalenderInformation(monthNumber = 1, year = 2024)
     }
 }
