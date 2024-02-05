@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -37,11 +39,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -68,57 +73,62 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun CalenderInformation(monthNumber: Int = 3, year: Int = 2023) {
     var clicked by remember { mutableStateOf(false) } // Flyttet clicked hit
+    val backgroundImage = painterResource(R.drawable.calender_background)
+    Box(modifier = Modifier.padding(start = 5.dp, end = 5.dp)
 
+    ) {
 
-    Column (
-        modifier = Modifier
-            .fillMaxSize()
-    ){
-        Spacer(
+        Column(
             modifier = Modifier
-                .height(40.dp)
-        )
-        // month display
-        Row (
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .fillMaxWidth()
-                .padding(start = 5.dp, end = 5.dp)
-                .border(BorderStroke(0.dp, Color.Black))
-                .height(46.dp)
-        ){
-            Text(
-                text = showMonth(monthNumber = monthNumber),
-                fontWeight = FontWeight.Bold,
-                color = Color.Green,
+                .fillMaxSize()
+        ) {
+            Spacer(
+                modifier = Modifier
+                    .height(40.dp)
             )
-            Text (
-                text = year.toString(),
-                fontWeight = FontWeight.Bold,
-                color = Color.Green,
-                modifier = Modifier.padding(start = 5.dp, end = 5.dp)
-            )
-        }
+            // month display
+            Row(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .fillMaxWidth()
+                    .border(BorderStroke(0.dp, Color.Black))
+                    .height(46.dp)
+            ) {
+                Text(
+                    modifier = Modifier,
+                    text = showMonth(monthNumber = monthNumber),
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Green,
+                )
+                Text(
+                    text = year.toString(),
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Green,
+                    modifier = Modifier.padding(start = 5.dp, end = 5.dp)
+                    // TODO() sentrer teksten til midten!!
+                )
+            }
 
-        // function to initialize calender - fra chatgpt
-        CalendarLayout(year, monthNumber, onCardClick = { clicked = true })
-        if (clicked) {
-            MinimalDialog(onDismissRequest = { clicked = false})
-        }
+            // function to initialize calender - fra chatgpt
+            CalendarLayout(year, monthNumber, onCardClick = { clicked = true })
+            if (clicked) {
+                MinimalDialog(onDismissRequest = { clicked = false })
+            }
 
 
-        Row (
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .padding(start = 5.dp, end = 5.dp)
-                .fillMaxWidth()
-                .border(BorderStroke(1.dp, Color.Black))
-                .height(46.dp)
-        ){
-            Text(
-                text = stringResource(R.string.bottom_click_text),
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+//                    .padding(start = 5.dp, end = 5.dp)
+                    .fillMaxWidth()
+                    .border(BorderStroke(1.dp, Color.Black))
+                    .height(46.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.bottom_click_text),
 
-            )
+                    )
+            }
         }
     }
 }
@@ -177,7 +187,15 @@ fun WeekNumbers(numOfWeeks: Int = 5) {
 @Composable
 fun CalendarLayout(year: Int, month: Int, onCardClick: () -> Unit) {
 //    var clicked by remember { mutableStateOf(false) }
-    Box {
+    Box(
+        modifier = Modifier
+            .clip(RectangleShape)
+            .padding(start = 5.dp, end = 5.dp)
+
+            .background(Color.DarkGray)
+            .wrapContentWidth(Alignment.CenterHorizontally), // Optional: Add padding as needed
+        contentAlignment = Alignment.Center
+    ) {
         Column {
             WeekDays()
             Row {
@@ -186,7 +204,6 @@ fun CalendarLayout(year: Int, month: Int, onCardClick: () -> Unit) {
                     modifier = Modifier
                         .fillMaxWidth(),
                     columns = GridCells.Fixed(count = 7),
-                    contentPadding = PaddingValues(end = 5.dp)
                 ) {
 
                     itemsIndexed(
@@ -194,7 +211,7 @@ fun CalendarLayout(year: Int, month: Int, onCardClick: () -> Unit) {
                     ) { _, item ->
                         Card(
                             modifier = Modifier
-                                .fillMaxWidth()
+//                                .fillMaxWidth()
                                 .border(width = 0.dp, color = Color.Blue)
                                 .height(height = 46.dp),
 
