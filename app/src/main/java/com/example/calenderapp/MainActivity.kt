@@ -184,7 +184,7 @@ fun CalendarLayout(onCardClick: () -> Unit) {
                 ) {
 
                     itemsIndexed(
-                        items =  listOfDaysInMonth("2023", 1)
+                        items =  listOfDaysInMonth(2024, 2)
                     ) { _, item ->
                         Card(
                             modifier = Modifier
@@ -288,10 +288,9 @@ fun monthIfJanOrFeb(month: Int, year: Int): Pair<Int, Int> {
 fun doubleToInt(doubleNumber: Double): Int {
     return doubleNumber.toInt()
 }
-fun firstDayOfMonth(year: String, month: Int): String {
-    val yearAsInt = year.toInt()
-    val monthUpdatet = monthIfJanOrFeb(month, yearAsInt).first
-    val yearUpdated = monthIfJanOrFeb(month, yearAsInt).second
+fun firstDayOfMonth(year: Int, month: Int): String {
+    val monthUpdatet = monthIfJanOrFeb(month, year).first
+    val yearUpdated = monthIfJanOrFeb(month, year).second
     val yearAsString = yearUpdated.toString()
     val firstPartOfYear = yearAsString.substring(0,2).toInt()
     val lastPartOfYear = yearAsString.substring(2,4).toInt()
@@ -325,7 +324,7 @@ fun numberOfDays(year: Int, month: Int):Int {
         else -> throw IllegalArgumentException("Invalid month")
     }
 }
-fun listOfDaysInMonth(year: String, month: Int): List<String> {
+fun listOfDaysInMonth(year: Int, month: Int): List<String> {
     val possibleDaysInMonth = listOf(" ", " ", " ", " ", " ", " ", "1", "2", "3", "4", "5", "6", "7", "8", "9",
         "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27",
         "28", "29", "30", "31")
@@ -339,7 +338,7 @@ fun listOfDaysInMonth(year: String, month: Int): List<String> {
         "Saturday" -> 1
         else -> 0
     }
-    val daysInChosenMonth = numberOfDays(year.toInt(), month)
+    val daysInChosenMonth = numberOfDays(year, month)
     val lastDayIndex = possibleDaysInMonth.indexOf(daysInChosenMonth.toString())
     val listOfDaysInChosenMonth = possibleDaysInMonth.subList(firstDayIndex, lastDayIndex+1)
     return listOfDaysInChosenMonth
