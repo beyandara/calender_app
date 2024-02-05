@@ -331,9 +331,9 @@ fun numberOfDays(year: Int, month: Int):Int {
     }
 }
 fun listOfDaysInMonth(year: Int, month: Int): List<String> {
-    val possibleDaysInMonth = listOf(" ", " ", " ", " ", " ", " ", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-        "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27",
-        "28", "29", "30", "31")
+    val possibleDaysInMonth = listOf(" ", " ", " ", " ", " ", " ", "1", "2", "3", "4", "5", "6",
+        "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21",
+        "22", "23", "24", "25", "26", "27", "28", "29", "30", "31")
     val nameOfFirstDay = firstDayOfMonth(year, month)
     val firstDayIndex: Int = when(nameOfFirstDay) {
         "Monday" -> 6
@@ -348,6 +348,22 @@ fun listOfDaysInMonth(year: Int, month: Int): List<String> {
     val lastDayIndex = possibleDaysInMonth.indexOf(daysInChosenMonth.toString())
     val listOfDaysInChosenMonth = possibleDaysInMonth.subList(firstDayIndex, lastDayIndex+1)
     return listOfDaysInChosenMonth
+}
+
+//Calculate number of days since January 1st.
+fun daysSinceJanuaryFirst(date: Int, month: Int, year: Int): String {
+    //list with number of days in each month
+    val daysInMonth = listOf(31, if (isLeapYear(year)) 29 else 28, 31, 30, 31, 30, 31,
+        31, 30, 31, 30, 31)
+
+    var daycount = 0
+
+    for (m in 1 until month) {   //iterate in range m to current month
+        daycount += daysInMonth[m - 1]     //add value from daysInMonth for previous months
+    }
+    daycount += date                       //add number of days in current month to days
+
+    return daycount.toString()
 }
 
 @Composable
