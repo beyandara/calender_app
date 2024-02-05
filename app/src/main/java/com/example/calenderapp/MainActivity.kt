@@ -193,7 +193,7 @@ fun CalendarLayout(year: Int, month: Int, onCardClick: () -> Unit) {
             .padding(start = 5.dp, end = 5.dp)
 
             .background(Color.DarkGray)
-            .wrapContentWidth(Alignment.CenterHorizontally), // Optional: Add padding as needed
+            .wrapContentWidth(Alignment.CenterHorizontally),
         contentAlignment = Alignment.Center
     ) {
         Column {
