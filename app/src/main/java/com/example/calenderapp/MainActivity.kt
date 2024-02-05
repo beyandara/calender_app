@@ -15,7 +15,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -26,6 +28,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -47,6 +50,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.graphics.toColorInt
 import com.example.calenderapp.ui.theme.CalenderAppTheme
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 
 class MainActivity : ComponentActivity() {
@@ -66,9 +70,15 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
+
 @Composable
 fun CalenderInformation(monthNumber: Int = 2, year: Int = 2023) {
     var clicked by remember { mutableStateOf(false) } // Flyttet clicked hit
+    var selectedItem by remember { mutableStateOf(0) }
+    var darkMode by remember { mutableStateOf(false)}
+
+
     val painter = painterResource(R.drawable.background)
     Box(
         modifier = Modifier
@@ -93,7 +103,7 @@ fun CalenderInformation(monthNumber: Int = 2, year: Int = 2023) {
                 modifier = Modifier
 //                    .align(Alignment.CenterHorizontally)
                     .fillMaxWidth()
-                    .border(BorderStroke(1.dp, color = Color("#9F2B68".toColorInt())))
+                    .border(BorderStroke(8.dp, MaterialTheme.colorScheme.surface))
                     .height(60.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
@@ -115,9 +125,13 @@ fun CalenderInformation(monthNumber: Int = 2, year: Int = 2023) {
             }
 
             // function to initialize calender - fra chatgpt
-            CalendarLayout(year, monthNumber, onCardClick = { clicked = true })
+            CalendarLayout(year, monthNumber, onCardClick = { clickedItem ->
+                clicked = true
+                selectedItem = clickedItem
+            })
+
             if (clicked) {
-                MinimalDialog(onDismissRequest = { clicked = false })
+                PopupDialog(selectedItem, monthNumber, year, onDismissRequest = { clicked = false })
             }
 
 
@@ -138,6 +152,7 @@ fun CalenderInformation(monthNumber: Int = 2, year: Int = 2023) {
 
                     )
             }
+            TurnOnDarkMode(darkMode = darkMode, onDarkMode = {darkMode = it})
         }
     }
 }
@@ -209,8 +224,9 @@ fun WeekNumbers(numOfWeeks: Int = 5) {
 
 
 @Composable
-fun CalendarLayout(year: Int, month: Int, onCardClick: () -> Unit) {
+fun CalendarLayout(year: Int, month: Int, onCardClick: (Int) -> Unit) {
 //    var clicked by remember { mutableStateOf(false) }
+
     Box {
         Column {
             WeekDays()
@@ -230,7 +246,7 @@ fun CalendarLayout(year: Int, month: Int, onCardClick: () -> Unit) {
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .border(width = 0.dp, color = Color("#9F2B68".toColorInt()))
+                                .border(width = 0.dp, Color(android.graphics.Color.parseColor("#FFB6C1"))) //color = variabel
                                 .height(height = 46.dp),
 
                             colors = CardDefaults.cardColors(
@@ -240,11 +256,11 @@ fun CalendarLayout(year: Int, month: Int, onCardClick: () -> Unit) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .clickable { onCardClick() }
+                                    .clickable { onCardClick(item.toInt()) }
                             ) {
 
                                 Text(
-                                    text = item.toString(), // Viser tallene i lista øverst
+                                    text = item, // Viser tallene i lista øverst
                                     modifier = Modifier
                                         .align(Alignment.Center),
                                     //                        .padding(4.dp),
@@ -260,9 +276,13 @@ fun CalendarLayout(year: Int, month: Int, onCardClick: () -> Unit) {
 }
 
 @Composable
-fun MinimalDialog(
+fun PopupDialog(
+    date: Int = 3,
+    numMonth: Int = 3,
+    year: Int = 2024,
     onDismissRequest: () -> Unit,
 ) {
+    val days = daysSinceJanuaryFirst(date, numMonth, year)
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
             modifier = Modifier
@@ -277,8 +297,11 @@ fun MinimalDialog(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                val alphaMonth = showMonth(monthNumber = numMonth)
+                val dayOrDays = if (date == 2) "day" else "days"
                 Text(
-                    text = "This is a dialog with buttons and an image.",
+
+                    text = "$date.$alphaMonth is $days $dayOrDays since 1.January ",
                     modifier = Modifier.padding(16.dp),
                 )
 
@@ -290,6 +313,26 @@ fun MinimalDialog(
                 }
         }
         }
+    }
+}
+
+@Composable
+fun TurnOnDarkMode(
+    darkMode: Boolean,
+    onDarkMode: (Boolean) -> Unit,
+    modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .size(48.dp)
+            .wrapContentWidth(Alignment.End)
+    ) {
+        Text ( text = "Dark Mode",
+                modifier = modifier.padding(end = 30.dp, top = 10.dp))
+        Switch(
+            checked = darkMode,
+            onCheckedChange = onDarkMode
+        )
     }
 }
 
@@ -398,24 +441,15 @@ fun daysSinceJanuaryFirst(date: Int, month: Int, year: Int): String {
     }
     daycount += date                       //add number  of days in current month to days
 
-    return daycount.toString()
+    return (daycount - 1).toString()
 }
 
-@Composable
-fun BackGround() {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(R.drawable.background),
-            contentDescription = "Background",
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier.matchParentSize())
-    }
-}
+
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     CalenderAppTheme {
-        CalenderInformation(monthNumber = 9, year = 2024)
+        CalenderInformation(monthNumber = 1, year = 2024)
     }
 }
