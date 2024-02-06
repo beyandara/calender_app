@@ -52,6 +52,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogWindowProvider
 import com.example.compose.DarkColors
 import com.example.compose.LightColors
+import java.util.Calendar
 
 
 class MainActivity : ComponentActivity() {
@@ -186,18 +187,6 @@ fun CalenderInformation(monthNumber: Int, year: Int) {
 }
 }// DARKMODE
 
-@Composable
-fun calculateWeeks(year: Int = 2024, month: Int = 9): Int {
-    val startingDay = firstDayOfMonth(year, month)
-    val numOfDays = numberOfDays(year, month)
-    val remainderWeeks = (numOfDays % 7)
-
-    return if (startingDay == "Sunday" || startingDay == "Saturday" && remainderWeeks > 1) {
-        6
-    } else if (startingDay == "Monday" && remainderWeeks == 0) {
-        4
-    } else 5
-}
 
 @Composable
 fun WeekDays() {
@@ -234,10 +223,11 @@ fun WeekDays() {
 }
 
 @Composable
-fun WeekNumbers(numOfWeeks: Int = 5) {
-//    val listOfWeeks = listOf("1", "2", "3", "4", "5") // Dette skal bli parameterisert
+fun WeekNumbers(year: Int, month:Int) {
+    val weeks = calculateWeekNumbers(year, month)
     LazyColumn {
-        items(count = numOfWeeks) { index ->
+        items(weeks.size) { index ->
+            val weekNumber = weeks[index]
             Box(
                 modifier = Modifier
                     .border(1.dp, MaterialTheme.colorScheme.primaryContainer)
@@ -245,7 +235,7 @@ fun WeekNumbers(numOfWeeks: Int = 5) {
                     .width(48.dp)
             ) {
                 Text(
-                    text = (index + 1).toString(),
+                    text = weekNumber.toString(),
                     modifier = Modifier
                         .align(Alignment.Center),
                     color = MaterialTheme.colorScheme.onPrimary
@@ -253,6 +243,28 @@ fun WeekNumbers(numOfWeeks: Int = 5) {
             }
         }
     }
+}
+
+@Composable
+fun calculateWeekNumbers(year: Int, month: Int): List<Int> {
+    val calendar = Calendar.getInstance().apply {
+        set(Calendar.YEAR, year)
+        set(Calendar.MONTH, month - 1) // Calendar.MONTH starts from 0
+        set(Calendar.DAY_OF_MONTH, 1)
+    }
+
+    val weeks = mutableListOf<Int>()
+    val totalDaysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+
+    for (dayOfMonth in 1..totalDaysInMonth) {
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+        val weekNumber = calendar.get(Calendar.WEEK_OF_YEAR)
+        if (weeks.isEmpty() || weeks.last() != weekNumber) {
+            weeks.add(weekNumber)
+        }
+    }
+
+    return weeks
 }
 
 
@@ -265,7 +277,7 @@ fun CalendarLayout(year: Int, month: Int, onCardClick: (Int) -> Unit) {
             WeekDays()
 
             Row {
-                WeekNumbers(calculateWeeks(year, month))
+                WeekNumbers(year, month)
                 LazyVerticalGrid(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -500,6 +512,6 @@ internal fun workdaysInMonth(year: Int, month: Int): Int {
 @Composable
 fun GreetingPreview() {
     CalenderAppTheme {
-        CalenderInformation(monthNumber = 2, year = 2024)
+        CalenderInformation(monthNumber = 3, year = 2024)
     }
 }
