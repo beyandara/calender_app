@@ -59,7 +59,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CalenderAppTheme {
-                CalenderInformation(monthNumber = 1, year = 2024)
+                CalenderInformation(monthNumber = 2, year = 2024)
             }
         }
     }
@@ -91,7 +91,7 @@ fun ThemeToggleButton(useDarkTheme: Boolean, onToggle: (Boolean) -> Unit) {
 }
 
 @Composable
-fun CalenderInformation(monthNumber: Int = 2, year: Int = 2023) {
+fun CalenderInformation(monthNumber: Int, year: Int) {
     var clicked by remember { mutableStateOf(false) } // Flyttet clicked hit
     var selectedItem by remember { mutableIntStateOf(0) }
     val isDarkTheme = isSystemInDarkTheme()
