@@ -97,7 +97,7 @@ fun CalenderInformation(monthNumber: Int, year: Int) {
     val isDarkTheme = isSystemInDarkTheme()
     val (darkTheme, setDarkTheme) = remember { mutableStateOf(isDarkTheme)}
     val background = if (darkTheme) { 
-        R.drawable.darkmode_background} 
+        R.drawable.darkmode_background}
     else {  R.drawable.lightmode_background
     }
 
@@ -166,13 +166,14 @@ fun CalenderInformation(monthNumber: Int, year: Int) {
                     Text(
                         text = stringResource(R.string.workday_text) + " "
                                 + workdaysInMonth(year, monthNumber),
-                        fontSize = 12.sp,
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
                             .padding(4.dp)
                     )
                     Text(
                         text = stringResource(R.string.bottom_click_text),
-                        fontSize = 12.sp,
+                        fontSize = 14.sp,
                         color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
                             .padding(4.dp)
@@ -266,38 +267,40 @@ fun CalendarLayout(year: Int, month: Int, onCardClick: (Int) -> Unit) {
                     modifier = Modifier
                         .fillMaxWidth(),
                     columns = GridCells.Fixed(count = 7),
-//                    contentPadding = PaddingValues(end = 5.dp)
                 ) {
 
                     itemsIndexed(
                         items =  listOfDaysInMonth(year, month)
                     ) { _, item ->
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(
-                                    width = 0.dp,
-                                    color = MaterialTheme.colorScheme.primaryContainer
-                                )
-                                .height(height = 46.dp),
 
-                            colors = CardDefaults.cardColors(
-                                containerColor = Color.Transparent
-                            )
-                        ) {
-                            Box(
+                            Card(
                                 modifier = Modifier
-                                    .fillMaxSize()
-                                    .clickable { onCardClick(item.toInt()) }
-                            ) {
+                                    .fillMaxWidth()
+                                    .border(
+                                        width = 0.dp,
+                                        color = MaterialTheme.colorScheme.primaryContainer
+                                    )
+                                    .height(height = 46.dp),
 
-                                Text(
-                                    text = item, // Viser tallene i lista øverst
-                                    modifier = Modifier
-                                        .align(Alignment.Center),
-                                    //                        .padding(4.dp),
-                                    color = MaterialTheme.colorScheme.onPrimary
+                                colors = CardDefaults.cardColors(
+                                    containerColor = Color.Transparent
                                 )
+                            ) {
+                                if (item != " ") {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clickable { onCardClick(item.toInt()) }
+                                ) {
+
+                                    Text(
+                                        text = item, // Viser tallene i lista øverst
+                                        modifier = Modifier
+                                            .align(Alignment.Center),
+                                        //                        .padding(4.dp),
+                                        color = MaterialTheme.colorScheme.onPrimary
+                                    )
+                                }
                             }
                         }
                     }
@@ -431,7 +434,7 @@ fun listOfDaysInMonth(year: Int, month: Int): List<String> {
     val possibleDaysInMonth = listOf(
         " ", " ", " ", " ", " ", " ", "1", "2", "3", "4", "5", "6", "7", "8", "9",
         "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22",
-        "23", "24", "25", "26", "27", "28", "29", "30", "31"
+        "23", "24", "25", "26", "27", "28", "29", "30", "31", " ", " ", " ", " ", " ", " "
     )
     val firstDayIndex: Int = when (firstDayOfMonth(year, month)) {
         "Monday" -> 6
@@ -462,13 +465,16 @@ fun daysSinceJanuaryFirst(date: Int, month: Int, year: Int): String {
 
     return (daycount - 1).toString()
 }
+
 @VisibleForTesting
 internal fun workdaysInMonth(year: Int, month: Int): Int {
     val daysInMonth = numberOfDays(year, month) //total days in month
     val firstDayInMonth = firstDayOfMonth(year, month) //stringName of first day
 
-    val weekdaysPattern = listOf("Monday", "Tuesday", "Wednesday", "Thursday",
-        "Friday", "Saturday", "Sunday")
+    val weekdaysPattern = listOf(
+        "Monday", "Tuesday", "Wednesday", "Thursday",
+        "Friday", "Saturday", "Sunday"
+    )
 
     // Find the index of the first day in the pattern
     val firstDayIndex = weekdaysPattern.indexOf(firstDayInMonth)
@@ -483,9 +489,8 @@ internal fun workdaysInMonth(year: Int, month: Int): Int {
     }
 
     // Count all entries in the list, excluding Saturday and Sunday to get workdays
-    val numberOfWorkdays = allDays.count { it != "Saturday" && it != "Sunday" }
 
-    return numberOfWorkdays
+    return allDays.count { it != "Saturday" && it != "Sunday" }
 }
 
 
@@ -493,6 +498,6 @@ internal fun workdaysInMonth(year: Int, month: Int): Int {
 @Composable
 fun GreetingPreview() {
     CalenderAppTheme {
-        CalenderInformation(monthNumber = 1, year = 2024)
+        CalenderInformation(monthNumber = 2, year = 2024)
     }
 }
