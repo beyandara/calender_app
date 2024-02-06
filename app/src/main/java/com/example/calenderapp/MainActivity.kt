@@ -3,6 +3,7 @@ package com.example.calenderapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -63,7 +64,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    CalenderInformation(monthNumber = 1, year = 2024)
+                    CalenderInformation(monthNumber = 2, year = 2024)
                 }
             }
         }
@@ -73,7 +74,7 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun CalenderInformation(monthNumber: Int = 2, year: Int = 2023) {
+fun CalenderInformation(monthNumber: Int, year: Int) {
     var clicked by remember { mutableStateOf(false) } // Flyttet clicked hit
     var selectedItem by remember { mutableStateOf(0) }
     var darkMode by remember { mutableStateOf(false)}
@@ -246,7 +247,8 @@ fun CalendarLayout(year: Int, month: Int, onCardClick: (Int) -> Unit) {
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .border(width = 0.dp, Color(android.graphics.Color.parseColor("#FFB6C1"))) //color = variabel
+                                .border(width = 0.dp,
+                                    Color(android.graphics.Color.parseColor("#FFB6C1"))) //color = variabel
                                 .height(height = 46.dp),
 
                             colors = CardDefaults.cardColors(
@@ -429,7 +431,8 @@ fun listOfDaysInMonth(year: Int, month: Int): List<String> {
 }
 
 //Calculate number of days since January 1st.
-fun daysSinceJanuaryFirst(date: Int, month: Int, year: Int): String {
+@VisibleForTesting
+internal fun daysSinceJanuaryFirst(date: Int, month: Int, year: Int): String {
     //list with number of days in each month
     val daysInMonth = listOf(31, if (isLeapYear(year)) 29 else 28, 31, 30, 31, 30, 31,
         31, 30, 31, 30, 31)
