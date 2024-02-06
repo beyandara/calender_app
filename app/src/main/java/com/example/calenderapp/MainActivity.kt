@@ -7,6 +7,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,10 +25,11 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -40,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -48,9 +51,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.core.graphics.toColorInt
-import com.example.calenderapp.ui.theme.CalenderAppTheme
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
+import androidx.compose.ui.window.DialogWindowProvider
+//import com.example.calenderapp.ui.theme.CalenderAppTheme
+//import com.example.compose.CalenderAppTheme
+import com.example.compose.DarkColors
+import com.example.compose.LightColors
 
 
 class MainActivity : ComponentActivity() {
@@ -58,28 +63,50 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CalenderAppTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    CalenderInformation(monthNumber = 1, year = 2024)
-                }
+                CalenderInformation(monthNumber = 1, year = 2024)
             }
         }
     }
 }
 
+@Composable
+fun CalenderAppTheme(
+    useDarkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable() () -> Unit
+) {
+    val colors = if (!useDarkTheme) {
+        LightColors
+    } else {
+        DarkColors
+    }
 
+
+    MaterialTheme(
+        colorScheme = colors,
+        content = content
+    )
+}
+
+@Composable
+fun ThemeToggleButton(useDarkTheme: Boolean, onToggle: (Boolean) -> Unit) {
+    Button(onClick = {onToggle(!useDarkTheme) }) {
+        Text(text = if (useDarkTheme) "Switch to Light mode" else "Switch to Dark mode")
+    }
+}
 
 @Composable
 fun CalenderInformation(monthNumber: Int = 2, year: Int = 2023) {
     var clicked by remember { mutableStateOf(false) } // Flyttet clicked hit
     var selectedItem by remember { mutableStateOf(0) }
-    var darkMode by remember { mutableStateOf(false)}
+    val isDarkTheme = isSystemInDarkTheme()
+    val (darkTheme, setDarkTheme) = remember { mutableStateOf(isDarkTheme)}
+    val background = if (darkTheme) { 
+        R.drawable.darkmode_background} 
+    else {  R.drawable.lightmode_background
+    }
 
+    CalenderAppTheme(useDarkTheme = darkTheme) {
 
-    val painter = painterResource(R.drawable.background)
     Box(
         modifier = Modifier
             .padding(start = 5.dp, end = 5.dp, top = 50.dp, bottom = 265.dp)
@@ -87,23 +114,18 @@ fun CalenderInformation(monthNumber: Int = 2, year: Int = 2023) {
     ) {
         Image(
             modifier =Modifier.fillMaxSize(),
-            painter = painter,
+            painter = painterResource(id = (background)),
             contentDescription = "Background image",
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
         )
 
 
         Column {
-//            Spacer(
-//                modifier = Modifier
-//                    .height(40.dp)
-//            )
-            // month display
             Row(
                 modifier = Modifier
 //                    .align(Alignment.CenterHorizontally)
                     .fillMaxWidth()
-                    .border(BorderStroke(8.dp, MaterialTheme.colorScheme.surface))
+                    .border(BorderStroke(1.dp, MaterialTheme.colorScheme.primaryContainer))
                     .height(60.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
@@ -111,14 +133,14 @@ fun CalenderInformation(monthNumber: Int = 2, year: Int = 2023) {
                 Text(
                     text = showMonth(monthNumber = monthNumber),
                     fontWeight = FontWeight.Bold,
-                    color = Color.DarkGray,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     textAlign = TextAlign.Center,
                     fontSize = 22.sp
                 )
                 Text(
                     text = year.toString(),
                     fontWeight = FontWeight.Bold,
-                    color = Color.DarkGray,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.padding(start = 5.dp),
                     fontSize = 22.sp
                 )
@@ -140,22 +162,24 @@ fun CalenderInformation(monthNumber: Int = 2, year: Int = 2023) {
                 modifier = Modifier
 //                    .padding(start = 5.dp, end = 5.dp)
                     .fillMaxWidth()
-                    .border(BorderStroke(1.dp, color = Color("#9F2B68".toColorInt())))
+                    .border(BorderStroke(1.dp, MaterialTheme.colorScheme.primaryContainer))
                     .height(60.dp)
                     .padding(top = 2.dp)
             ) {
                 Text(
                     text = stringResource(R.string.bottom_click_text),
                     textAlign = TextAlign.Center,
-                    fontSize = 18.sp
+                    fontSize = 18.sp,
+                    color = MaterialTheme.colorScheme.onPrimary
 
 
                     )
             }
-            TurnOnDarkMode(darkMode = darkMode, onDarkMode = {darkMode = it})
+            ThemeToggleButton(useDarkTheme = darkTheme, onToggle = setDarkTheme)
         }
     }
 }
+}// DARKMODE
 
 @Composable
 fun calculateWeeks(year: Int = 2024, month: Int = 9): Int {
@@ -177,7 +201,7 @@ fun WeekDays() {
         modifier = Modifier
 //            .padding(start = 5.dp, end = 5.dp)
             .fillMaxWidth()
-            .border(BorderStroke(1.dp, color = Color("#9F2B68".toColorInt())))
+            .border(BorderStroke(1.dp, MaterialTheme.colorScheme.primaryContainer))
             .height(46.dp)
             .width(46.dp)
 
@@ -186,14 +210,16 @@ fun WeekDays() {
         items(count = listOfDays.size) { index ->
             Box(
                 modifier = Modifier
-                    .border(0.dp, Color.Black)
+                    .border(0.dp, MaterialTheme.colorScheme.primaryContainer)
                     .height(46.dp)
-                    .width(48.dp)
+                    .width(48.dp),
+
 
             ) {
                 Text(text = listOfDays[index],
                     modifier = Modifier
-                        .align(Alignment.Center))
+                        .align(Alignment.Center),
+                    color = MaterialTheme.colorScheme.onPrimary)
             }
         }
     }
@@ -208,14 +234,15 @@ fun WeekNumbers(numOfWeeks: Int = 5) {
         items(count = numOfWeeks) { index ->
             Box(
                 modifier = Modifier
-                    .border(1.dp, color = Color("#9F2B68".toColorInt()))
+                    .border(1.dp, MaterialTheme.colorScheme.primaryContainer)
                     .height(46.dp)
                     .width(48.dp)
             ) {
                 Text(
                     text = (index + 1).toString(),
                     modifier = Modifier
-                        .align(Alignment.Center)
+                        .align(Alignment.Center),
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
             }
         }
@@ -246,7 +273,10 @@ fun CalendarLayout(year: Int, month: Int, onCardClick: (Int) -> Unit) {
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .border(width = 0.dp, Color(android.graphics.Color.parseColor("#FFB6C1"))) //color = variabel
+                                .border(
+                                    width = 0.dp,
+                                    color = MaterialTheme.colorScheme.primaryContainer
+                                )
                                 .height(height = 46.dp),
 
                             colors = CardDefaults.cardColors(
@@ -264,7 +294,7 @@ fun CalendarLayout(year: Int, month: Int, onCardClick: (Int) -> Unit) {
                                     modifier = Modifier
                                         .align(Alignment.Center),
                                     //                        .padding(4.dp),
-                                    color = Color.Black
+                                    color = MaterialTheme.colorScheme.onPrimary
                                 )
                             }
                         }
@@ -284,12 +314,18 @@ fun PopupDialog(
 ) {
     val days = daysSinceJanuaryFirst(date, numMonth, year)
     Dialog(onDismissRequest = { onDismissRequest() }) {
+        (LocalView.current.parent as DialogWindowProvider).window.setDimAmount(0.5f)
         Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(200.dp)
                 .padding(16.dp),
             shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+
+
         ) {
             Column(
                 modifier = Modifier
@@ -303,13 +339,14 @@ fun PopupDialog(
 
                     text = "$date.$alphaMonth is $days $dayOrDays since 1.January ",
                     modifier = Modifier.padding(16.dp),
-                )
+                    color = MaterialTheme.colorScheme.onPrimary)
 
                 TextButton(
                     onClick = { onDismissRequest() },
                     modifier = Modifier.padding(8.dp),
                 ) {
-                    Text("Dismiss")
+                    Text("Dismiss",
+                        color = MaterialTheme.colorScheme.onPrimary)
                 }
         }
         }
