@@ -86,7 +86,7 @@ fun CalenderAppTheme(
 @Composable
 fun ThemeToggleButton(useDarkTheme: Boolean, onToggle: (Boolean) -> Unit) {
     Button(onClick = {onToggle(!useDarkTheme) }) {
-        Text(text = if (useDarkTheme) "Switch to Light mode" else "Switch to Dark mode")
+        Text(text = if (useDarkTheme) stringResource(R.string.light_mode) else stringResource(R.string.dark_mode))
     }
 }
 
@@ -164,7 +164,7 @@ fun CalenderInformation(monthNumber: Int, year: Int) {
             ) {
                 Column {
                     Text(
-                        text = stringResource(R.string.workday_text) + " "
+                        text = stringResource(R.string.workdays_text) + " "
                                 + workdaysInMonth(year, monthNumber),
                         fontSize = 14.sp,
                         color = MaterialTheme.colorScheme.onPrimary,
@@ -172,7 +172,7 @@ fun CalenderInformation(monthNumber: Int, year: Int) {
                             .padding(4.dp)
                     )
                     Text(
-                        text = stringResource(R.string.bottom_click_text),
+                        text = stringResource(R.string.days_since_jan1),
                         fontSize = 14.sp,
                         color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
@@ -201,7 +201,10 @@ fun calculateWeeks(year: Int = 2024, month: Int = 9): Int {
 
 @Composable
 fun WeekDays() {
-    val listOfDays = listOf("", "mon", "tue", "wed", "thu", "fri", "sat", "sun")
+    val listOfDays = listOf("", stringResource(R.string.monday),
+        stringResource(R.string.tues_thursday), stringResource(R.string.wednesday),
+        stringResource(R.string.tues_thursday), stringResource(R.string.friday),
+        stringResource(R.string.sat_sunday), stringResource(R.string.sat_sunday))
     LazyRow(
         modifier = Modifier
 //            .padding(start = 5.dp, end = 5.dp)
@@ -294,10 +297,9 @@ fun CalendarLayout(year: Int, month: Int, onCardClick: (Int) -> Unit) {
                                 ) {
 
                                     Text(
-                                        text = item, // Viser tallene i lista øverst
+                                        text = item,
                                         modifier = Modifier
                                             .align(Alignment.Center),
-                                        //                        .padding(4.dp),
                                         color = MaterialTheme.colorScheme.onPrimary
                                     )
                                 }
@@ -339,10 +341,9 @@ fun PopupDialog(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 val alphaMonth = showMonth(monthNumber = numMonth)
-                val dayOrDays = if (date == 2) "day" else "days"
+                val dayOrDays = if (date == 2) stringResource(R.string.day) else stringResource(R.string.days)
                 Text(
-
-                    text = "$date.$alphaMonth is $days $dayOrDays since 1.January ",
+                    text = "$date.$alphaMonth is $days $dayOrDays since 1.January ", //TODO()
                     modifier = Modifier.padding(16.dp),
                     color = MaterialTheme.colorScheme.onPrimary)
 
@@ -350,7 +351,8 @@ fun PopupDialog(
                     onClick = { onDismissRequest() },
                     modifier = Modifier.padding(8.dp),
                 ) {
-                    Text("Dismiss",
+                    Text(
+                        stringResource(R.string.dismiss),
                         color = MaterialTheme.colorScheme.onPrimary)
                 }
         }
@@ -434,7 +436,7 @@ fun listOfDaysInMonth(year: Int, month: Int): List<String> {
     val possibleDaysInMonth = listOf(
         " ", " ", " ", " ", " ", " ", "1", "2", "3", "4", "5", "6", "7", "8", "9",
         "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22",
-        "23", "24", "25", "26", "27", "28", "29", "30", "31", " ", " ", " ", " ", " ", " "
+        "23", "24", "25", "26", "27", "28", "29", "30", "31"
     )
     val firstDayIndex: Int = when (firstDayOfMonth(year, month)) {
         "Monday" -> 6
