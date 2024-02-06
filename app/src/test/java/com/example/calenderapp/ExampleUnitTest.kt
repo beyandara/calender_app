@@ -34,4 +34,28 @@ class ExampleUnitTest {
         val actualNumberOfDays = daysSinceJanuaryFirst(1, 3, 2024)
         assertEquals(expectedNumberOfDays, actualNumberOfDays)
     }
+
+    @Test
+    fun isLeapYear_twentyTwentyFour() {
+        val year = 2024
+        val expectedBool: Boolean = true
+        val actualBool = isLeapYear(2024)
+        assertEquals(expectedBool, actualBool)
+    }
+
+    @Test
+    fun isLeapYear_nineteenHundred() {
+        val year = 1900
+        val expectedBool: Boolean = false
+        val actualBool = isLeapYear(1900)
+        assertEquals(expectedBool, actualBool)
+    }
+    @Test
+    fun isLeapYear_twoThousand() {
+        val year = 2000
+        val expectedBool: Boolean = true
+        val actualBool = isLeapYear(2000)
+        assertEquals(expectedBool, actualBool)
+    }
 }
+

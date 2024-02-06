@@ -399,7 +399,8 @@ fun firstDayOfMonth(year: Int, month: Int): String {
 
 //Return True if year is divisible by 4 and reminder not zero when divided by 100, or if
 // reminder of year divided by 400 = 0
-fun isLeapYear(year: Int): Boolean {
+@VisibleForTesting
+internal fun isLeapYear(year: Int): Boolean {
     return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)
 }
 fun numberOfDays(year: Int, month: Int):Int {
