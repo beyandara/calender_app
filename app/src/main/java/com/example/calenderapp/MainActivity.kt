@@ -3,6 +3,7 @@ package com.example.calenderapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -161,14 +162,22 @@ fun CalenderInformation(monthNumber: Int = 2, year: Int = 2023) {
                     .height(60.dp)
                     .padding(top = 2.dp)
             ) {
-                Text(
-                    text = stringResource(R.string.bottom_click_text),
-                    textAlign = TextAlign.Center,
-                    fontSize = 18.sp,
-                    color = MaterialTheme.colorScheme.onPrimary
-
-
+                Column {
+                    Text(
+                        text = stringResource(R.string.workday_text) + " "
+                                + workdaysInMonth(year, monthNumber),
+                        fontSize = 12.sp,
+                        modifier = Modifier
+                            .padding(4.dp)
                     )
+                    Text(
+                        text = stringResource(R.string.bottom_click_text),
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier
+                            .padding(4.dp)
+                    )
+                }
             }
             ThemeToggleButton(useDarkTheme = darkTheme, onToggle = setDarkTheme)
         }
@@ -420,43 +429,9 @@ fun numberOfDays(year: Int, month: Int):Int {
 }
 fun listOfDaysInMonth(year: Int, month: Int): List<String> {
     val possibleDaysInMonth = listOf(
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "10",
-        "11",
-        "12",
-        "13",
-        "14",
-        "15",
-        "16",
-        "17",
-        "18",
-        "19",
-        "20",
-        "21",
-        "22",
-        "23",
-        "24",
-        "25",
-        "26",
-        "27",
-        "28",
-        "29",
-        "30",
-        "31"
+        " ", " ", " ", " ", " ", " ", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+        "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22",
+        "23", "24", "25", "26", "27", "28", "29", "30", "31"
     )
     val firstDayIndex: Int = when (firstDayOfMonth(year, month)) {
         "Monday" -> 6
@@ -487,7 +462,31 @@ fun daysSinceJanuaryFirst(date: Int, month: Int, year: Int): String {
 
     return (daycount - 1).toString()
 }
+@VisibleForTesting
+internal fun workdaysInMonth(year: Int, month: Int): Int {
+    val daysInMonth = numberOfDays(year, month) //total days in month
+    val firstDayInMonth = firstDayOfMonth(year, month) //stringName of first day
 
+    val weekdaysPattern = listOf("Monday", "Tuesday", "Wednesday", "Thursday",
+        "Friday", "Saturday", "Sunday")
+
+    // Find the index of the first day in the pattern
+    val firstDayIndex = weekdaysPattern.indexOf(firstDayInMonth)
+
+    // A list to hold all days
+    val allDays = mutableListOf<String>()
+
+    // Add the weekdays to the list based on the pattern
+    for (i in 0 until daysInMonth) {
+        val weekday = weekdaysPattern[(firstDayIndex + i) % 7] // Get the weekday based on the index
+        allDays.add(weekday)
+    }
+
+    // Count all entries in the list, excluding Saturday and Sunday to get workdays
+    val numberOfWorkdays = allDays.count { it != "Saturday" && it != "Sunday" }
+
+    return numberOfWorkdays
+}
 
 
 @Preview(showBackground = true)
