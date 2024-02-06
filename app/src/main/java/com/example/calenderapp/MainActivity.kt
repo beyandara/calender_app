@@ -16,9 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -27,14 +25,13 @@ import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -52,8 +49,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogWindowProvider
-//import com.example.calenderapp.ui.theme.CalenderAppTheme
-//import com.example.compose.CalenderAppTheme
 import com.example.compose.DarkColors
 import com.example.compose.LightColors
 
@@ -72,7 +67,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun CalenderAppTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable() () -> Unit
+    content: @Composable () -> Unit
 ) {
     val colors = if (!useDarkTheme) {
         LightColors
@@ -97,7 +92,7 @@ fun ThemeToggleButton(useDarkTheme: Boolean, onToggle: (Boolean) -> Unit) {
 @Composable
 fun CalenderInformation(monthNumber: Int = 2, year: Int = 2023) {
     var clicked by remember { mutableStateOf(false) } // Flyttet clicked hit
-    var selectedItem by remember { mutableStateOf(0) }
+    var selectedItem by remember { mutableIntStateOf(0) }
     val isDarkTheme = isSystemInDarkTheme()
     val (darkTheme, setDarkTheme) = remember { mutableStateOf(isDarkTheme)}
     val background = if (darkTheme) { 
@@ -228,9 +223,7 @@ fun WeekDays() {
 @Composable
 fun WeekNumbers(numOfWeeks: Int = 5) {
 //    val listOfWeeks = listOf("1", "2", "3", "4", "5") // Dette skal bli parameterisert
-    LazyColumn(
-//        contentPadding = PaddingValues(start = 5.dp),
-    ) {
+    LazyColumn {
         items(count = numOfWeeks) { index ->
             Box(
                 modifier = Modifier
@@ -354,26 +347,6 @@ fun PopupDialog(
 }
 
 @Composable
-fun TurnOnDarkMode(
-    darkMode: Boolean,
-    onDarkMode: (Boolean) -> Unit,
-    modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .size(48.dp)
-            .wrapContentWidth(Alignment.End)
-    ) {
-        Text ( text = "Dark Mode",
-                modifier = modifier.padding(end = 30.dp, top = 10.dp))
-        Switch(
-            checked = darkMode,
-            onCheckedChange = onDarkMode
-        )
-    }
-}
-
-@Composable
 fun showMonth(monthNumber: Int): String {
     val numberToMonthName = when (monthNumber) {
         1 -> stringResource(R.string.month_1)
@@ -392,8 +365,9 @@ fun showMonth(monthNumber: Int): String {
     return numberToMonthName
 }
 
-//Funksjoner som bruker Zellers Algoritme til å finne første dag i mnd og år.
-//firstDayOfMonth tar inn år som streng, mnd som int, returnerer navn på dag som String
+/** Functions that use Zeller's Algorithm to find the first day of the month and year.
+firstDayOfMonth takes year as string, month as int, returns the name of the day as String**/
+
 fun monthIfJanOrFeb(month: Int, year: Int): Pair<Int, Int> {
     var updatedMonth = month
     var updatedYear = year
@@ -419,8 +393,7 @@ fun firstDayOfMonth(year: Int, month: Int): String {
     val addIntegerParts =
         doubleToInt(2.6*monthUpdatet-5.39) + (lastPartOfYear/4) + (firstPartOfYear/4) +
                 firstOfMonth + lastPartOfYear - (2*firstPartOfYear)
-    val remainder = (addIntegerParts % 7 + 7) % 7
-    val nameOfFirstDay = when (remainder) {
+    val nameOfFirstDay = when ((addIntegerParts % 7 + 7) % 7) {
         0 -> "Sunday"
         1 -> "Monday"
         2 -> "Tuesday"
@@ -446,11 +419,46 @@ fun numberOfDays(year: Int, month: Int):Int {
     }
 }
 fun listOfDaysInMonth(year: Int, month: Int): List<String> {
-    val possibleDaysInMonth = listOf(" ", " ", " ", " ", " ", " ", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-        "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27",
-        "28", "29", "30", "31")
-    val nameOfFirstDay = firstDayOfMonth(year, month)
-    val firstDayIndex: Int = when(nameOfFirstDay) {
+    val possibleDaysInMonth = listOf(
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31"
+    )
+    val firstDayIndex: Int = when (firstDayOfMonth(year, month)) {
         "Monday" -> 6
         "Tuesday" -> 5
         "Wednesday" -> 4
@@ -461,8 +469,7 @@ fun listOfDaysInMonth(year: Int, month: Int): List<String> {
     }
     val daysInChosenMonth = numberOfDays(year, month)
     val lastDayIndex = possibleDaysInMonth.indexOf(daysInChosenMonth.toString())
-    val listOfDaysInChosenMonth = possibleDaysInMonth.subList(firstDayIndex, lastDayIndex+1)
-    return listOfDaysInChosenMonth
+    return possibleDaysInMonth.subList(firstDayIndex, lastDayIndex + 1)
 }
 
 //Calculate number of days since January 1st.
