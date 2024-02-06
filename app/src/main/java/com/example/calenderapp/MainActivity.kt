@@ -473,7 +473,7 @@ internal fun workdaysInMonth(year: Int, month: Int): Int {
     // Find the index of the first day in the pattern
     val firstDayIndex = weekdaysPattern.indexOf(firstDayInMonth)
 
-    // A list to hold all days
+    // A list to hold all days as string
     val allDays = mutableListOf<String>()
 
     // Add the weekdays to the list based on the pattern
