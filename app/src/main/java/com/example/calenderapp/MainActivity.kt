@@ -253,12 +253,13 @@ fun calculateWeekNumbers(year: Int, month: Int): List<Int> {
         set(Calendar.DAY_OF_MONTH, 1)
     }
 
-    val weeks = mutableListOf<Int>()
+    val weeks = mutableListOf<Int>()   //list to hold week numbers
     val totalDaysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
 
     for (dayOfMonth in 1..totalDaysInMonth) {
-        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-        val weekNumber = calendar.get(Calendar.WEEK_OF_YEAR)
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth) //set calendar object day to dayOgMonth
+        val weekNumber = calendar.get(Calendar.WEEK_OF_YEAR) //get week number for current day
+        //check if week number is different from last number, or if list empty
         if (weeks.isEmpty() || weeks.last() != weekNumber) {
             weeks.add(weekNumber)
         }
