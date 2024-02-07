@@ -180,6 +180,57 @@ fun CalendarLayout(monthNumber: Int, year: Int) {
 }// DARKMODE
 
 @Composable
+fun CalendarGrid(year: Int, month: Int, onCardClick: (Int) -> Unit) {
+    Column {
+        WeekDays()
+
+        Row {
+            WeekNumbers(year, month)
+            LazyVerticalGrid(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                columns = GridCells.Fixed(count = 7),
+            ) {
+
+                itemsIndexed(
+                    items =  listOfDaysInMonth(year, month)
+                ) { _, item ->
+
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .border(
+                                    width = 0.5.dp,
+                                    color = MaterialTheme.colorScheme.primaryContainer
+                                )
+                                .height(height = 46.dp),
+
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color.Transparent
+                            )
+                        ) {
+                            if (item != " ") {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clickable { onCardClick(item.toInt()) }
+                            ) {
+                                Text(
+                                    text = item,
+                                    modifier = Modifier
+                                        .align(Alignment.Center),
+                                    color = MaterialTheme.colorScheme.onPrimary
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
 fun WeekDays() {
     val listOfDays = listOf("", stringResource(R.string.monday),
         stringResource(R.string.tues_thursday), stringResource(R.string.wednesday),
@@ -256,57 +307,6 @@ fun calculateWeekNumbers(year: Int, month: Int): List<Int> {
         }
     }
     return weeks
-}
-
-@Composable
-fun CalendarGrid(year: Int, month: Int, onCardClick: (Int) -> Unit) {
-    Column {
-        WeekDays()
-
-        Row {
-            WeekNumbers(year, month)
-            LazyVerticalGrid(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                columns = GridCells.Fixed(count = 7),
-            ) {
-
-                itemsIndexed(
-                    items =  listOfDaysInMonth(year, month)
-                ) { _, item ->
-
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(
-                                    width = 0.5.dp,
-                                    color = MaterialTheme.colorScheme.primaryContainer
-                                )
-                                .height(height = 46.dp),
-
-                            colors = CardDefaults.cardColors(
-                                containerColor = Color.Transparent
-                            )
-                        ) {
-                            if (item != " ") {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clickable { onCardClick(item.toInt()) }
-                            ) {
-                                Text(
-                                    text = item,
-                                    modifier = Modifier
-                                        .align(Alignment.Center),
-                                    color = MaterialTheme.colorScheme.onPrimary
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
 
 @Composable
