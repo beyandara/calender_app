@@ -61,7 +61,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CalenderAppTheme {
-                CalenderInformation(monthNumber = 2, year = 2024)
+                CalendarLayout(monthNumber = 2, year = 2024)
             }
         }
     }
@@ -84,15 +84,9 @@ fun CalenderAppTheme(
     )
 }
 
-@Composable
-fun ThemeToggleButton(useDarkTheme: Boolean, onToggle: (Boolean) -> Unit) {
-    Button(onClick = {onToggle(!useDarkTheme) }) {
-        Text(text = if (useDarkTheme) stringResource(R.string.light_mode) else stringResource(R.string.dark_mode))
-    }
-}
 
 @Composable
-fun CalenderInformation(monthNumber: Int, year: Int) {
+fun CalendarLayout(monthNumber: Int, year: Int) {
     var clicked by remember { mutableStateOf(false) } // Flyttet clicked hit
     var selectedItem by remember { mutableIntStateOf(0) }
     val isDarkTheme = isSystemInDarkTheme()
@@ -143,7 +137,7 @@ fun CalenderInformation(monthNumber: Int, year: Int) {
             }
 
             // function to initialize calender - fra chatgpt
-            CalendarLayout(year, monthNumber, onCardClick = { clickedItem ->
+            CalendarGrid(year, monthNumber, onCardClick = { clickedItem ->
                 clicked = true
                 selectedItem = clickedItem
             })
@@ -265,55 +259,60 @@ fun calculateWeekNumbers(year: Int, month: Int): List<Int> {
 }
 
 @Composable
-fun CalendarLayout(year: Int, month: Int, onCardClick: (Int) -> Unit) {
-    Box {
-        Column {
-            WeekDays()
+fun CalendarGrid(year: Int, month: Int, onCardClick: (Int) -> Unit) {
+    Column {
+        WeekDays()
 
-            Row {
-                WeekNumbers(year, month)
-                LazyVerticalGrid(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    columns = GridCells.Fixed(count = 7),
-                ) {
+        Row {
+            WeekNumbers(year, month)
+            LazyVerticalGrid(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                columns = GridCells.Fixed(count = 7),
+            ) {
 
-                    itemsIndexed(
-                        items =  listOfDaysInMonth(year, month)
-                    ) { _, item ->
+                itemsIndexed(
+                    items =  listOfDaysInMonth(year, month)
+                ) { _, item ->
 
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .border(
-                                        width = 0.5.dp,
-                                        color = MaterialTheme.colorScheme.primaryContainer
-                                    )
-                                    .height(height = 46.dp),
-
-                                colors = CardDefaults.cardColors(
-                                    containerColor = Color.Transparent
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .border(
+                                    width = 0.5.dp,
+                                    color = MaterialTheme.colorScheme.primaryContainer
                                 )
+                                .height(height = 46.dp),
+
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color.Transparent
+                            )
+                        ) {
+                            if (item != " ") {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clickable { onCardClick(item.toInt()) }
                             ) {
-                                if (item != " ") {
-                                Box(
+                                Text(
+                                    text = item,
                                     modifier = Modifier
-                                        .fillMaxSize()
-                                        .clickable { onCardClick(item.toInt()) }
-                                ) {
-                                    Text(
-                                        text = item,
-                                        modifier = Modifier
-                                            .align(Alignment.Center),
-                                        color = MaterialTheme.colorScheme.onPrimary
-                                    )
-                                }
+                                        .align(Alignment.Center),
+                                    color = MaterialTheme.colorScheme.onPrimary
+                                )
                             }
                         }
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun ThemeToggleButton(useDarkTheme: Boolean, onToggle: (Boolean) -> Unit) {
+    Button(onClick = {onToggle(!useDarkTheme) }) {
+        Text(text = if (useDarkTheme) stringResource(R.string.light_mode) else stringResource(R.string.dark_mode))
     }
 }
 
@@ -363,6 +362,7 @@ fun PopupDialog(
         }
     }
 }
+
 @Composable
 fun showMonth(monthNumber: Int): String {
     val numberToMonthName = when (monthNumber) {
@@ -501,6 +501,6 @@ internal fun workdaysInMonth(year: Int, month: Int): Int {
 @Composable
 fun GreetingPreview() {
     CalenderAppTheme {
-        CalenderInformation(monthNumber = 12, year = 2024)
+        CalendarLayout(monthNumber = 12, year = 2024)
     }
 }

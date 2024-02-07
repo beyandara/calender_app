@@ -17,7 +17,7 @@ class CalendarTest {
     @Test
     fun checkDaysSinceJanuaryFirst() {
         composeTestRule.setContent {
-            CalenderInformation(monthNumber = 4, year = 2024)
+            CalendarLayout(monthNumber = 4, year = 2024)
         }
 
         Thread.sleep(2000)
@@ -36,3 +36,5 @@ class CalendarTest {
 
     }
 }
+
+
