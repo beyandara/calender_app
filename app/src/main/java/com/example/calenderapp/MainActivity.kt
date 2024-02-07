@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -87,7 +86,7 @@ fun CalenderAppTheme(
 
 @Composable
 fun CalendarLayout(monthNumber: Int, year: Int) {
-    var clicked by remember { mutableStateOf(false) } // Flyttet clicked hit
+    var clicked by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableIntStateOf(0) }
     val isDarkTheme = isSystemInDarkTheme()
     val (darkTheme, setDarkTheme) = remember { mutableStateOf(isDarkTheme)}
@@ -136,7 +135,6 @@ fun CalendarLayout(monthNumber: Int, year: Int) {
                 )
             }
 
-            // function to initialize calender - fra chatgpt
             CalendarGrid(year, monthNumber, onCardClick = { clickedItem ->
                 clicked = true
                 selectedItem = clickedItem
@@ -177,7 +175,7 @@ fun CalendarLayout(monthNumber: Int, year: Int) {
         }
     }
 }
-}// DARKMODE
+}
 
 @Composable
 fun CalendarGrid(year: Int, month: Int, onCardClick: (Int) -> Unit) {
@@ -401,14 +399,14 @@ fun doubleToInt(doubleNumber: Double): Int {
     return doubleNumber.toInt()
 }
 fun firstDayOfMonth(year: Int, month: Int): String {
-    val monthUpdatet = monthIfJanOrFeb(month, year).first
+    val monthUpdated = monthIfJanOrFeb(month, year).first
     val yearUpdated = monthIfJanOrFeb(month, year).second
     val yearAsString = yearUpdated.toString()
     val firstPartOfYear = yearAsString.substring(0,2).toInt()
     val lastPartOfYear = yearAsString.substring(2,4).toInt()
     val firstOfMonth = 1
     val addIntegerParts =
-        doubleToInt(2.6*monthUpdatet-5.39) + (lastPartOfYear/4) + (firstPartOfYear/4) +
+        doubleToInt(2.6*monthUpdated-5.39) + (lastPartOfYear/4) + (firstPartOfYear/4) +
                 firstOfMonth + lastPartOfYear - (2*firstPartOfYear)
     val nameOfFirstDay = when ((addIntegerParts % 7 + 7) % 7) {
         0 -> "Sunday"
@@ -462,14 +460,14 @@ fun daysSinceJanuaryFirst(date: Int, month: Int, year: Int): String {
     val daysInMonth = listOf(31, if (isLeapYear(year)) 29 else 28, 31, 30, 31, 30, 31,
         31, 30, 31, 30, 31)
 
-    var daycount = 0
+    var dayCount = 0
 
     for (m in 1 until month) {   //iterate in range m to current month
-        daycount += daysInMonth[m - 1]     //add value from daysInMonth for previous months
+        dayCount += daysInMonth[m - 1]     //add value from daysInMonth for previous months
     }
-    daycount += date                       //add number  of days in current month to days
+    dayCount += date                       //add number  of days in current month to days
 
-    return (daycount - 1).toString()
+    return (dayCount - 1).toString()
 }
 
 @VisibleForTesting
