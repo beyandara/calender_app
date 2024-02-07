@@ -11,6 +11,9 @@
       <entry key="checkDaysSinceJanFirst()">
         <State />
       </entry>
+      <entry key="checkDaysSinceJanuaryFirst()">
+        <State />
+      </entry>
       <entry key="testDaysSinceJanFirst()">
         <State />
       </entry>

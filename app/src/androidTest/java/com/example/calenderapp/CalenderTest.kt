@@ -1,6 +1,11 @@
 package com.example.calenderapp
 
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import org.junit.Rule
 import org.junit.Test
 
@@ -12,17 +17,22 @@ class CalendarTest {
     @Test
     fun checkDaysSinceJanuaryFirst() {
         composeTestRule.setContent {
-            CalenderInformation(monthNumber = 1, year = 2024)
+            CalenderInformation(monthNumber = 4, year = 2024)
         }
 
+        Thread.sleep(2000)
 
-        // Resten av linjene her får appen til å krasje, selv om jeg kun tar med linje 23
-//        composeTestRule.onNodeWithText("15").performClick()
-//
-//        composeTestRule.onNodeWithText("Dismiss").assertIsDisplayed()
-//        composeTestRule.onNodeWithText("2.January is 1 day since 1.January").assertIsDisplayed()
-
-        // pause for neste steg, man kan ha dem mellom hver klikk f.eks
+        composeTestRule.onNode(
+            hasText("15")
+            and
+            hasClickAction()
+        ).performClick()
         Thread.sleep(3000)
+
+        composeTestRule.onNodeWithText("Dismiss").assertIsDisplayed()
+
+        composeTestRule.onNodeWithText("15.April is 105 days since 1.January").assertIsDisplayed()
+        Thread.sleep(1000)
+
     }
 }

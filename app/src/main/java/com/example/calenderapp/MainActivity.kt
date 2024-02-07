@@ -346,7 +346,7 @@ fun PopupDialog(
                 val alphaMonth = showMonth(monthNumber = numMonth)
                 val dayOrDays = if (date == 2) stringResource(R.string.day) else stringResource(R.string.days)
                 Text(
-                    text = "$date.$alphaMonth is $days $dayOrDays since 1.January ", //TODO()
+                    text = "$date.$alphaMonth is $days $dayOrDays since 1.January", //TODO()
                     modifier = Modifier.padding(16.dp),
                     color = MaterialTheme.colorScheme.onPrimary)
 
