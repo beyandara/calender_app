@@ -61,7 +61,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CalenderAppTheme {
-                CalenderInformation(monthNumber = 5, year = 2024)
+                CalenderInformation(monthNumber = 2, year = 2024)
             }
         }
     }
@@ -244,6 +244,7 @@ fun WeekNumbers(year: Int, month:Int) {
 @Composable
 fun calculateWeekNumbers(year: Int, month: Int): List<Int> {
     val calendar = Calendar.getInstance().apply {
+        firstDayOfWeek = Calendar.MONDAY
         set(Calendar.YEAR, year)
         set(Calendar.MONTH, month - 1) // Calendar.MONTH starts from 0
         set(Calendar.DAY_OF_MONTH, 1)
@@ -500,6 +501,6 @@ internal fun workdaysInMonth(year: Int, month: Int): Int {
 @Composable
 fun GreetingPreview() {
     CalenderAppTheme {
-        CalenderInformation(monthNumber = 3, year = 2024)
+        CalenderInformation(monthNumber = 12, year = 2024)
     }
 }
