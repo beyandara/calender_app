@@ -8,6 +8,18 @@
       <entry key="app">
         <State />
       </entry>
+      <entry key="checkDaysSinceJanFirst()">
+        <State />
+      </entry>
+      <entry key="testDaysSinceJanFirst()">
+        <State />
+      </entry>
+      <entry key="testPopupDialog()">
+        <State />
+      </entry>
+      <entry key="testPopupDialog() (1)">
+        <State />
+      </entry>
     </value>
   </component>
 </project>

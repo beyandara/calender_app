@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -59,7 +60,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CalenderAppTheme {
-                CalenderInformation(monthNumber = 2, year = 2024)
+                CalenderInformation(monthNumber = 5, year = 2024)
             }
         }
     }
@@ -119,7 +120,6 @@ fun CalenderInformation(monthNumber: Int, year: Int) {
         Column {
             Row(
                 modifier = Modifier
-//                    .align(Alignment.CenterHorizontally)
                     .fillMaxWidth()
                     .border(BorderStroke(1.dp, MaterialTheme.colorScheme.primaryContainer))
                     .height(60.dp),
@@ -158,9 +158,10 @@ fun CalenderInformation(monthNumber: Int, year: Int) {
                 modifier = Modifier
 //                    .padding(start = 5.dp, end = 5.dp)
                     .fillMaxWidth()
-                    .border(BorderStroke(1.dp, MaterialTheme.colorScheme.primaryContainer))
+                    .border(BorderStroke(2.dp, MaterialTheme.colorScheme.primaryContainer))
                     .height(60.dp)
                     .padding(top = 2.dp)
+
             ) {
                 Column {
                     Text(
@@ -218,7 +219,7 @@ fun WeekDays() {
         items(count = listOfDays.size) { index ->
             Box(
                 modifier = Modifier
-                    .border(0.dp, MaterialTheme.colorScheme.primaryContainer)
+                    .border(0.5.dp, MaterialTheme.colorScheme.primaryContainer)
                     .height(46.dp)
                     .width(48.dp),
 
@@ -280,7 +281,7 @@ fun CalendarLayout(year: Int, month: Int, onCardClick: (Int) -> Unit) {
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .border(
-                                        width = 0.dp,
+                                        width = 0.5.dp,
                                         color = MaterialTheme.colorScheme.primaryContainer
                                     )
                                     .height(height = 46.dp),
