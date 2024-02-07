@@ -77,7 +77,6 @@ fun CalenderAppTheme(
         DarkColors
     }
 
-
     MaterialTheme(
         colorScheme = colors,
         content = content
@@ -153,11 +152,9 @@ fun CalenderInformation(monthNumber: Int, year: Int) {
                 PopupDialog(selectedItem, monthNumber, year, onDismissRequest = { clicked = false })
             }
 
-
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-//                    .padding(start = 5.dp, end = 5.dp)
                     .fillMaxWidth()
                     .border(BorderStroke(1.dp, MaterialTheme.colorScheme.primaryContainer))
                     .height(60.dp)
@@ -187,7 +184,6 @@ fun CalenderInformation(monthNumber: Int, year: Int) {
 }
 }// DARKMODE
 
-
 @Composable
 fun WeekDays() {
     val listOfDays = listOf("", stringResource(R.string.monday),
@@ -202,7 +198,6 @@ fun WeekDays() {
             .height(46.dp)
             .width(46.dp)
 
-
     ) {
         items(count = listOfDays.size) { index ->
             Box(
@@ -210,13 +205,13 @@ fun WeekDays() {
                     .border(0.dp, MaterialTheme.colorScheme.primaryContainer)
                     .height(46.dp)
                     .width(48.dp),
-
-
             ) {
-                Text(text = listOfDays[index],
+                Text(
+                    text = listOfDays[index],
                     modifier = Modifier
                         .align(Alignment.Center),
-                    color = MaterialTheme.colorScheme.onPrimary)
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
             }
         }
     }
@@ -264,15 +259,11 @@ fun calculateWeekNumbers(year: Int, month: Int): List<Int> {
             weeks.add(weekNumber)
         }
     }
-
     return weeks
 }
 
-
 @Composable
 fun CalendarLayout(year: Int, month: Int, onCardClick: (Int) -> Unit) {
-//    var clicked by remember { mutableStateOf(false) }
-
     Box {
         Column {
             WeekDays()
@@ -308,7 +299,6 @@ fun CalendarLayout(year: Int, month: Int, onCardClick: (Int) -> Unit) {
                                         .fillMaxSize()
                                         .clickable { onCardClick(item.toInt()) }
                                 ) {
-
                                     Text(
                                         text = item,
                                         modifier = Modifier
@@ -345,7 +335,6 @@ fun PopupDialog(
                 containerColor = MaterialTheme.colorScheme.onPrimaryContainer
             )
 
-
         ) {
             Column(
                 modifier = Modifier
@@ -372,7 +361,6 @@ fun PopupDialog(
         }
     }
 }
-
 @Composable
 fun showMonth(monthNumber: Int): String {
     val numberToMonthName = when (monthNumber) {
@@ -393,7 +381,7 @@ fun showMonth(monthNumber: Int): String {
 }
 
 /** Functions that use Zeller's Algorithm to find the first day of the month and year.
-firstDayOfMonth takes year as string, month as int, returns the name of the day as String**/
+firstDayOfMonth takes year as int, month as int, returns the name of the day as String**/
 
 fun monthIfJanOrFeb(month: Int, year: Int): Pair<Int, Int> {
     var updatedMonth = month
@@ -432,8 +420,8 @@ fun firstDayOfMonth(year: Int, month: Int): String {
     return nameOfFirstDay
 }
 
-//Return True if year is divisible by 4 and reminder not zero when divided by 100, or if
-// reminder of year divided by 400 = 0
+/** Return True if year is divisible by 4 and reminder not zero when divided by 100, or if
+reminder of year divided by 400 = 0 **/
 fun isLeapYear(year: Int): Boolean {
     return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)
 }
@@ -461,6 +449,7 @@ fun listOfDaysInMonth(year: Int, month: Int): List<String> {
         else -> 0
     }
     val daysInChosenMonth = numberOfDays(year, month)
+    //Set last index equal to index in possibleDaysInMonth where value = daysInChosenMonth
     val lastDayIndex = possibleDaysInMonth.indexOf(daysInChosenMonth.toString())
     return possibleDaysInMonth.subList(firstDayIndex, lastDayIndex + 1)
 }
@@ -502,12 +491,9 @@ internal fun workdaysInMonth(year: Int, month: Int): Int {
         val weekday = weekdaysPattern[(firstDayIndex + i) % 7] // Get the weekday based on the index
         allDays.add(weekday)
     }
-
     // Count all entries in the list, excluding Saturday and Sunday to get workdays
-
     return allDays.count { it != "Saturday" && it != "Sunday" }
 }
-
 
 @Preview(showBackground = true)
 @Composable
